@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html data-menu-color="light" data-sidebar="default">
+
+<head>
+    {{ include('partials/title-meta.html.twig') }}
+    {% block css %}{% endblock %}
+    {{ include('partials/head-css.html.twig') }}
+</head>
+
+{{ include('partials/body.html.twig') }}
+
+<div id="app-layout">
+
+    {{ include('partials/topbar.html.twig') }}
+    {{ include('partials/sidebar.html.twig') }}
+
+    <div class="content-page">
+
+        <div class="content">
+            
+            {% block content %}{% endblock %}
+            
+        </div>
+
+        {{ include('partials/footer.html.twig') }}
+
+    </div>
+</div>
+
+{{ include('partials/vendor.html.twig') }}
+
+{% block script %}{% endblock %}
+
+<script src="js/app.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {{ include('partials/title-meta.html.twig') }}
+    {% block css %}{% endblock %}
+    {{ include('partials/head-css.html.twig') }}
+</head>
+
+<body>
+
+    <div class="account-page">
+
+        <div class="container-fluid p-0">
+
+            <div class="row align-items-center g-0 px-3 py-3 vh-100">
+            
+              {% block content %}{% endblock %}
+
+            </div>
+            
+        </div>
+    </div>
+
+
+{{ include('partials/vendor.html.twig') }}
+
+{% block script %}{% endblock %}
+
+</body>
+
+</html>

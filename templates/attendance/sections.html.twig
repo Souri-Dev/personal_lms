@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Select Section
+{% endblock %}
+
+{% block body %}
+	<div class="container mt-4">
+		<h2>{{ schoolClass.subjectName }}
+			- Sections</h2>
+		<ul class="list-group">
+			{% for section in sections %}
+				<li class="list-group-item d-flex justify-content-between align-items-center">
+					{{ section.sectionName }}
+					<a href="{{ path('attendance_take', { id: section.id }) }}" class="btn btn-sm btn-success">Take Attendance</a>
+				</li>
+			{% else %}
+				<li class="list-group-item">No sections found for this class.</li>
+			{% endfor %}
+		</ul>
+	</div>
+{% endblock %}

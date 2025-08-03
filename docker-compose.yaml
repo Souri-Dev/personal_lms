@@ -1,0 +1,38 @@
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: csit-dept-lms-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: csit_dept_lms
+      MYSQL_USER: csit_dept_lms_user
+      MYSQL_PASSWORD: csit_dept_lms_pass
+    ports:
+      - "3308:3306"  # Host:Container
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - csit_dept_lms-network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: csit-dept-lms-phpmyadmin
+    restart: unless-stopped
+    environment:
+      PMA_HOST: mysql
+      PMA_USER: csit_dept_lms_user
+      PMA_PASSWORD: csit_dept_lms_pass
+    ports:
+      - "8081:80"
+    depends_on:
+      - mysql
+    networks:
+      - csit_dept_lms-network
+
+networks:
+  csit_dept_lms-network:
+
+volumes:
+  mysql_data:

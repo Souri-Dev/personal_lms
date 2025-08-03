@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2171.09 653.53">
+  <defs>
+    <style>
+      .cls-1 {
+        font-family: Cabin-Bold, 'Cabin Bold';
+        font-size: 218.87px;
+        font-weight: 700;
+      }
+
+      .cls-1, .cls-2, .cls-3 {
+        fill: #fff;
+      }
+
+      .cls-2 {
+        fill-rule: evenodd;
+      }
+
+      .cls-3 {
+        font-family: Cabin-Regular, 'Cabin Regular';
+        font-size: 110.25px;
+        letter-spacing: .22em;
+      }
+
+      .cls-4 {
+        letter-spacing: 0em;
+      }
+    </style>
+  </defs>
+  <g id="Code_Breaker_Logo" data-name="Code Breaker Logo">
+    <g id="Text">
+      <text class="cls-1" transform="translate(910.08 326.76)"><tspan class="cls-4" x="0" y="0">SOURI </tspan><tspan x="604.95" y="0">DEV</tspan></text>
+      <text class="cls-3" transform="translate(825.46 486.88)"><tspan x="0" y="0">code with precision</tspan></text>
+    </g>
+    <g id="Logo_Shape" data-name="Logo Shape">
+      <path id="_2" data-name="2" class="cls-2" d="M315.01,142.19l-184.31,184.31,184.84,184.84,46.21-46.21-138.63-138.63,138.63-138.63-46.75-45.68ZM468.95,142.19L326.76,0,0,326.76l326.76,326.76,142.18-142.45-46.21-46.21,138.1-138.1-138.37-138.37,46.48-46.21Z"/>
+      <polygon id="_1" data-name="1" class="cls-2" points="504.21 142.19 688.52 326.5 503.68 511.34 457.47 465.13 596.1 326.5 457.47 187.86 504.21 142.19"/>
+    </g>
+  </g>
+</svg>

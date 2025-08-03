@@ -1,0 +1,66 @@
+{% extends 'layouts/vertical.html.twig' %}
+
+{% set title = 'Profile' %}
+
+{% block css %}{% endblock %}
+
+{% block content %}
+
+	<!-- Start Content-->
+	<div class="container-fluid">
+		<div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
+			<div class="flex-grow-1">
+				<h4 class="fs-18 fw-semibold m-0">Profile</h4>
+			</div>
+
+			<div class="text-end">
+				<ol class="breadcrumb m-0 py-0">
+					<li class="breadcrumb-item">
+						<a href="javascript: void(0);">Students</a>
+					</li>
+					<li class="breadcrumb-item active">Profile</li>
+				</ol>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-12">
+				<div class="card">
+					<img src="/images/small/user-image.jpg" class="rounded-top-2 img-fluid" alt="image data">
+					<div class="card-body padding-0">
+						<div class="align-items-center">
+
+							<div class="dusty-main-sections">
+								<div class="dusty-profile-main">
+									<img src=" {{ path('app_student_qr', { id: student.id } ) }}" class="qr-image img-thumbnail" alt=" qr code">
+
+									<span class="sil-profile_main-pic-change img-thumbnail">
+										<i class="mdi mdi-camera text-white"></i>
+									</span>
+								</div>
+
+								<div class="overflow-hidden ms-md-4 ms-0">
+									<h4 class="m-0 text-dark fs-20 mt-2 mt-md-0 mb-1">{{ student.name }}</h4>
+									<div class"row">
+										<span class="fs-15">
+											<i class="mdi mdi-google-classroom me-2 align-middle"></i>Course:
+											<span>{{ student.course }}</span>
+										</span>
+									</div>
+									<div class"row">
+										<span class="fs-15">
+											<i class="mdi mdi-account me-2 align-middle"></i>Section:
+											<span>{{ student.section }}</span>
+										</span>
+									</div>
+								</div>
+
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+		<!-- container-fluid -->
+	{% endblock %}

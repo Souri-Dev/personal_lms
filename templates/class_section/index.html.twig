@@ -1,0 +1,138 @@
+{% extends 'layouts/vertical.html.twig' %}
+
+{% set title = 'Section List' %}
+
+{% block css %}
+	<!-- Datatables css -->
+	<link href="/libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css" rel="stylesheet" type="text/css"/>
+	<link href="/libs/datatables.net-buttons-bs5/css/buttons.bootstrap5.min.css" rel="stylesheet" type="text/css"/>
+	<link href="/libs/datatables.net-keytable-bs5/css/keyTable.bootstrap5.min.css" rel="stylesheet" type="text/css"/>
+	<link href="/libs/datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css" rel="stylesheet" type="text/css"/>
+	<link href="/libs/datatables.net-select-bs5/css/select.bootstrap5.min.css" rel="stylesheet" type="text/css"/>
+
+	<link href="/libs/simple-datatables/style.css" rel="stylesheet" type="text/css"/>
+{% endblock %}
+
+{% block content %}
+
+	{# {{dump(form)}} #}
+
+	<!-- Start Content-->
+		<div class="container-fluid"> <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
+			<div class="flex-grow-1 d-flex align-items-center gap-4 mb-3 mb-sm-0">
+				<h4 class="fs-18 fw-semibold m-0">Sections List</h4>
+				<button type="button" class="btn btn-sm btn-primary waves-effect waves-light" data-bs-toggle="modal" data-bs-target=".bs-example-modal-xl">
+					<i class="mdi mdi-plus text-white"></i>
+				</button>
+
+			</div>
+
+			<div class="text-end">
+				<ol class="breadcrumb m-0 py-0">
+					<li class="breadcrumb-item">
+						<a href="{{path('app_subject')}}">Subjects</a>
+					</li>
+					<li class="breadcrumb-item active">Section List</li>
+				</ol>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-12">
+				<div class="card">
+					<div class="card-body">
+						<table id="datatable" class="table dt-responsive table-responsive nowrap">
+							<thead>
+								<tr>
+									<th>Subject</th>
+									<th>Section</th>
+									<th>Action</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for section in sections %}
+									<tr>
+										<td>{{ schoolClass.subjectName }}</td>
+										<td>{{ section.sectionName }}</td>
+										<td class="text-start">
+											<a aria-label="View Students" class="btn btn-sm bg-success-subtle me-1" data-bs-toggle="tooltip" title="View Students" href="{{ path('app_subject_sections_list_of_students', { id: schoolClass.id, sectionId: section.id }) }}">
+												<i class="mdi mdi-eye fs-14 text-success"></i>
+											</a>
+
+											<button aria-label="Edit" class="btn btn-sm bg-primary-subtle me-1" data-bs-toggle="modal" data-bs-target="#editModal{{ section.id }}" title="Edit">
+												<i class="mdi mdi-pencil-outline fs-14 text-primary"></i>
+											</button>
+
+											<button type="button" class="btn btn-sm bg-danger-subtle" title="Delete" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{ schoolClass.id }}">
+												<i class="mdi mdi-delete fs-14 text-danger"></i>
+											</button>
+										</td>
+									</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- end row -->
+	</div>
+
+
+	{# ------------Adding Class Modal--------- #}
+	<div class="modal fade bs-example-modal-xl" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-xl">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="myExtraLargeModalLabel">Add New Class</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div class="col-lg-12 ms-lg-auto">
+						<div class="mt-5 mt-lg-4">
+							{{ form_start(form, {'attr': {'class': 'needs-validation'}}) }}
+							<div class="row mb-4">
+								{{ form_label(form.sectionName, 'Section Name', {'label_attr': {'class': 'col-sm-3 col-form-label'}}) }}
+								<div class="col-sm-9">
+									{{ form_widget(form.sectionName, {'attr': {'class': 'form-control', 'placeholder': 'Enter Section Name'}}) }}
+									{{ form_errors(form.sectionName) }}
+								</div>
+							</div>
+
+							<div class="row mb-4">
+								{{ form_label(form.class, 'Subject', {'label_attr': {'class': 'col-sm-3 col-form-label'}}) }}
+								<div class="col-sm-9">
+									{{ form_widget(form.class, {'attr': {'class': 'form-control', 'placeholder': 'Enter Section'}}) }}
+									{{ form_errors(form.class) }}
+								</div>
+							</div>
+							<div class="d-flex justify-content-end">
+								<button class="btn btn-primary ml-auto">Add Class</button>
+							</div>
+
+							{{ form_end(form) }}
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+{% endblock %}
+{% block script %}<!-- Datatables js --><script src="/libs/datatables.net/js/jquery.dataTables.min.js"></script><!-- dataTables.bootstrap5 --><script src="/libs/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
+	<script src="/libs/datatables.net-buttons/js/dataTables.buttons.min.js"></script><!-- buttons.colVis --><script src="/libs/datatables.net-buttons/js/buttons.colVis.min.js"></script>
+	<script src="/libs/datatables.net-buttons/js/buttons.flash.min.js"></script>
+	<script src="/libs/datatables.net-buttons/js/buttons.html5.min.js"></script>
+	<script src="/libs/datatables.net-buttons/js/buttons.print.min.js"></script><!-- buttons.bootstrap5 --><script src="/libs/datatables.net-buttons-bs5/js/buttons.bootstrap5.min.js"></script><!-- dataTables.keyTable --><script src="/libs/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
+	<script src="/libs/datatables.net-keytable-bs5/js/keyTable.bootstrap5.min.js"></script><!-- dataTable.responsive --><script src="/libs/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+	<script src="/libs/datatables.net-responsive-bs5/js/responsive.bootstrap5.min.js"></script><!-- dataTables.select --><script src="/libs/datatables.net-select/js/dataTables.select.min.js"></script>
+	<script src="/libs/datatables.net-select-bs5/js/select.bootstrap5.min.js"></script><!-- Datatable Demo App Js --><script src="/js/pages/datatable.init.js"></script>
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+const tooltipTriggerList = [].slice.call(document.querySelectorAll('[title]'));
+tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+new bootstrap.Tooltip(tooltipTriggerEl);
+});
+});
+	</script>
+{% endblock %}

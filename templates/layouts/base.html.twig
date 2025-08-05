@@ -1,21 +1,19 @@
 <!DOCTYPE html>
-<html lang="en" >
+<html lang="en">
 
-<head>
-    {{ include('partials/title-meta.html.twig') }}
-    {% block css %}{% endblock %}
-    {{ include('partials/head-css.html.twig') }}
-</head>
+	<head>
+		{{ include('partials/title-meta.html.twig') }}
+		{% block css %}{% endblock %}
+		{{ include('partials/head-css.html.twig') }}
+	</head>
 
-<body class="{{ body_atttribute }}" >
+	<body class="{{ body_atttribute }}"> {% block content %}{% endblock %}
+
+		{{ include('partials/vendor.html.twig') }}
 
 
-    {% block content %}{% endblock %}
-    
-    {{ include('partials/vendor.html.twig') }}
+		{% block script %}{% endblock %}
 
-    {% block script %}{% endblock %}
-
-</body>
+	</body>
 
 </html>

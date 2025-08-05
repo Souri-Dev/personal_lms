@@ -9,6 +9,7 @@ use App\Entity\Student;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use App\Validator\UniqueSectionPerClass;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ClassSectionRepository::class)]
 #[UniqueSectionPerClass(message: 'This section name already exists in this class.')]
@@ -24,6 +25,10 @@ class ClassSection
 
     #[ORM\ManyToOne(inversedBy: 'classSections')]
     private ?SchoolClass $class = null;
+
+    #[ORM\Column(type: 'time', nullable: false)]
+    #[Assert\NotNull(message: 'Time-in is required.')]
+    private ?\DateTimeInterface $timeIn = null;
 
     #[ORM\ManyToMany(targetEntity: Student::class, mappedBy: 'classSections')]
     private Collection $students;
@@ -56,9 +61,21 @@ class ClassSection
         return $this->class;
     }
 
+    public function getTimeIn(): ?\DateTimeInterface
+    {
+        return $this->timeIn;
+    }
+
     public function setClass(?SchoolClass $class): static
     {
         $this->class = $class;
+
+        return $this;
+    }
+
+    public function setTimeIn(?\DateTimeInterface $timeIn): static
+    {
+        $this->timeIn = $timeIn;
 
         return $this;
     }

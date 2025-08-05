@@ -10,6 +10,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Doctrine\ORM\EntityRepository;
+use Symfony\Component\Form\Extension\Core\Type\TimeType;
 
 class ClassSectionTypeForm extends AbstractType
 {
@@ -32,6 +33,16 @@ class ClassSectionTypeForm extends AbstractType
                     'class' => 'col-sm-3 col-form-label',
                 ],
             ]);
+
+        if (!$options['hide_time_in']) {
+            $builder
+                ->add('timeIn', TimeType::class, [
+                    'label' => 'Time In',
+                    'input' => 'datetime', // stores as DateTime
+                    'widget' => 'single_text', // use HTML5 time picker
+                    'required' => true,
+                ]);
+        }
 
         if (!$options['hide_students_field']) {
             $builder
@@ -81,6 +92,7 @@ class ClassSectionTypeForm extends AbstractType
             'data_class' => ClassSection::class,
             'hide_section_name' => false, // new option default
             'hide_students_field' => false,
+            'hide_time_in' => false, // new option default
             'section' => null,
             'school_class' => null,
         ]);

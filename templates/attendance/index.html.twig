@@ -1,6 +1,4 @@
-{% extends 'base.html.twig' %}
-
-{% block title %}Select Subject
+{# {% block title %}Select Subject
 {% endblock %}
 
 {% block body %}
@@ -17,4 +15,112 @@
 			{% endfor %}
 		</ul>
 	</div>
+{% endblock %} #}
+
+
+{% extends 'layouts/vertical.html.twig' %}
+
+{% set title = 'Select Subject' %}
+
+{% block css %}
+	<!-- Datatables css -->
+	<link href="/libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css" rel="stylesheet" type="text/css"/>
+	<link href="/libs/datatables.net-buttons-bs5/css/buttons.bootstrap5.min.css" rel="stylesheet" type="text/css"/>
+	<link href="/libs/datatables.net-keytable-bs5/css/keyTable.bootstrap5.min.css" rel="stylesheet" type="text/css"/>
+	<link href="/libs/datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css" rel="stylesheet" type="text/css"/>
+	<link href="/libs/datatables.net-select-bs5/css/select.bootstrap5.min.css" rel="stylesheet" type="text/css"/>
+
+	<link href="/libs/simple-datatables/style.css" rel="stylesheet" type="text/css"/>
+{% endblock %}
+
+{% block content %}
+
+	{# {{dump(form)}} #}
+
+	<!-- Start Content-->
+		<div class="container-fluid"> <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
+			<div class="flex-grow-1 d-flex align-items-center gap-4 mb-3 mb-sm-0">
+				<h4 class="fs-18 fw-semibold m-0">Select Subject</h4>
+			</div>
+
+			<div class="text-end">
+				<ol class="breadcrumb m-0 py-0">
+					<li class="breadcrumb-item">
+						<a href="{{path('app_subject')}}">Subjects</a>
+					</li>
+					<li class="breadcrumb-item active">Select Subject</li>
+				</ol>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-12">
+				<div class="card">
+					<div class="card-body">
+						<table id="datatable" class="table dt-responsive table-responsive nowrap">
+							<thead>
+								<tr>
+									<th>Subject Code</th>
+									<th>Subject</th>
+									<th>Action</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for subject in classes %}
+									<tr>
+										<td>{{ subject.subjectCode }}</td>
+										<td>{{ subject.subjectName }}</td>
+										{# Adjust this if you have a section object or name available #}
+										<td>
+											<a href="{{ path('attendance_sections', { id: subject.id }) }}" class="btn btn-sm btn-primary">Select Section</a>
+										</td>
+									</tr>
+								{% else %}
+									<tr>
+										<td colspan="3" class="text-center">No subjects found.</td>
+									</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- end row -->
+	</div>
+
+
+{% endblock %}
+{% block script %}
+	<!-- Datatables js -->
+	<script src="/libs/datatables.net/js/jquery.dataTables.min.js"></script>
+	<!-- dataTables.bootstrap5 -->
+	<script src="/libs/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
+	<script src="/libs/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+	<!-- buttons.colVis -->
+	<script src="/libs/datatables.net-buttons/js/buttons.colVis.min.js"></script>
+	<script src="/libs/datatables.net-buttons/js/buttons.flash.min.js"></script>
+	<script src="/libs/datatables.net-buttons/js/buttons.html5.min.js"></script>
+	<script src="/libs/datatables.net-buttons/js/buttons.print.min.js"></script>
+	<!-- buttons.bootstrap5 -->
+	<script src="/libs/datatables.net-buttons-bs5/js/buttons.bootstrap5.min.js"></script>
+	<!-- dataTables.keyTable -->
+	<script src="/libs/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
+	<script src="/libs/datatables.net-keytable-bs5/js/keyTable.bootstrap5.min.js"></script>
+	<!-- dataTable.responsive -->
+	<script src="/libs/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+	<script src="/libs/datatables.net-responsive-bs5/js/responsive.bootstrap5.min.js"></script>
+	<!-- dataTables.select -->
+	<script src="/libs/datatables.net-select/js/dataTables.select.min.js"></script>
+	<script src="/libs/datatables.net-select-bs5/js/select.bootstrap5.min.js"></script>
+	<!-- Datatable Demo App Js -->
+	<script src="/js/pages/datatable.init.js"></script>
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+const tooltipTriggerList = [].slice.call(document.querySelectorAll('[title]'));
+tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+new bootstrap.Tooltip(tooltipTriggerEl);
+});
+});
+	</script>
 {% endblock %}

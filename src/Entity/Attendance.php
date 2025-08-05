@@ -22,7 +22,7 @@ class Attendance
     #[ORM\JoinColumn(nullable: false)]
     private ?ClassSection $classSection = null;
 
-    #[ORM\Column(type: Types::DATE_IMMUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private ?\DateTimeImmutable $date = null;
 
     #[ORM\Column(length: 50)]

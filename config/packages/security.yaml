@@ -16,12 +16,22 @@ security:
         main:
             lazy: true
             provider: app_user_provider
+            
             form_login:
                 login_path: app_login
                 check_path: app_login
                 default_target_path: app_dashboard
                 # The following options are only needed if you want to enable CSRF protection
                 enable_csrf: true
+
+            remember_me:
+                secret: '%kernel.secret%'
+                lifetime: 604800 # 1 week in seconds
+                # by default, the feature is enabled by checking a
+                # checkbox in the login form (see below), uncomment the
+                # following line to always enable it.
+                #always_remember_me: true
+                
             logout:
                 path: app_logout
                 # where to redirect after logout
@@ -38,9 +48,12 @@ security:
     access_control:
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/login, roles: PUBLIC_ACCESS }
+        - { path: ^/, roles: ROLE_USER }
         - { path: ^/dashboard, roles: ROLE_USER }
         - { path: ^/student, roles: ROLE_USER }
         - { path: ^/class, roles: ROLE_USER }
+        - { path: ^/attendance, roles: ROLE_USER }
         # - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
 
 when@test:

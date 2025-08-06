@@ -1,24 +1,3 @@
-{# {% block title %}Select Section
-{% endblock %}
-
-{% block body %}
-	<div class="container mt-4">
-		<h2>{{ schoolClass.subjectName }}
-			- Sections</h2>
-		<ul class="list-group">
-			{% for section in sections %}
-				<li class="list-group-item d-flex justify-content-between align-items-center">
-					{{ section.sectionName }}
-					<a href="{{ path('attendance_take', { id: section.id }) }}" class="btn btn-sm btn-success">Take Attendance</a>
-				</li>
-			{% else %}
-				<li class="list-group-item">No sections found for this class.</li>
-			{% endfor %}
-		</ul>
-	</div>
-{% endblock %} #}
-
-
 {% extends 'layouts/vertical.html.twig' %}
 
 {% set title = 'Select Section' %}
@@ -36,10 +15,9 @@
 
 {% block content %}
 
-	{# {{dump(form)}} #}
-
 	<!-- Start Content-->
-		<div class="container-fluid"> <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
+	<div class="container-fluid">
+		<div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
 			<div class="flex-grow-1 d-flex align-items-center gap-4 mb-3 mb-sm-0">
 				<h4 class="fs-18 fw-semibold m-0">Select Section for
 					{{ schoolClass.subjectName }}</h4>
@@ -54,6 +32,7 @@
 				</ol>
 			</div>
 		</div>
+
 		<div class="row">
 			<div class="col-12">
 				<div class="card">
@@ -87,10 +66,9 @@
 				</div>
 			</div>
 		</div>
-
-		<!-- end row -->
 	</div>
 
+	<!-- end row -->
 
 {% endblock %}
 {% block script %}

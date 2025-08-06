@@ -213,14 +213,11 @@ class AttendanceController extends AbstractController
 
 
     #[Route('/section/{id}/attendance-logs', name: 'section_attendance_logs', methods: ['GET'])]
-    public function getAttendanceLogs(ClassSection $section, EntityManagerInterface $em): Response
+    public function getAttendanceLogs(ClassSection $section, EntityManagerInterface $em): JsonResponse
     {
         // Define today's range
         $todayStart = new \DateTimeImmutable('today midnight');
         $todayEnd = $todayStart->modify('+1 day');
-
-        // Get students in this section
-        $students = $section->getStudents(); // assuming OneToMany with Student
 
         // Get today's attendance logs for this section
         $attendanceLogs = $em->getRepository(Attendance::class)->createQueryBuilder('a')
@@ -234,6 +231,40 @@ class AttendanceController extends AbstractController
             ->getQuery()
             ->getResult();
 
+        // Convert logs to JSON-friendly array
+        $logData = array_map(function ($log) {
+            return [
+                'studentName' => $log->getStudent()->getName(),
+                'time' => $log->getDate()->format('h:i A'),
+            ];
+        }, $attendanceLogs);
+
+        return new JsonResponse([
+            'attendanceLogs' => $logData,
+        ]);
+    }
+
+    #[Route('/section/{id}/attendance-view', name: 'section_attendance_view', methods: ['GET'])]
+    public function viewAttendanceTable(ClassSection $section, EntityManagerInterface $em): Response
+    {
+
+        $students = $section->getStudents();
+        $totalStudents = count($students);
+        $todayStart = new \DateTimeImmutable('today midnight');
+        $todayEnd = $todayStart->modify('+1 day');
+
+        $students = $section->getStudents();
+
+        $attendanceLogs = $em->getRepository(Attendance::class)->createQueryBuilder('a')
+            ->where('a.classSection = :section')
+            ->andWhere('a.date >= :start')
+            ->andWhere('a.date < :end')
+            ->setParameter('section', $section)
+            ->setParameter('start', $todayStart)
+            ->setParameter('end', $todayEnd)
+            ->getQuery()
+            ->getResult();
+
         // Group logs by student ID
         $logsByStudentId = [];
         foreach ($attendanceLogs as $log) {
@@ -241,22 +272,65 @@ class AttendanceController extends AbstractController
             $logsByStudentId[$studentId] = $log;
         }
 
-        // Prepare attendance info per student
+        // Prepare formatted data for Twig
         $studentAttendance = [];
+        $totalPresent = 0;
+        $totalLate = 0;
+        $totalAbsent = 0;
+        $expectedTimeIn = $section->getTimeIn();
+
         foreach ($students as $student) {
             $studentId = $student->getId();
             $log = $logsByStudentId[$studentId] ?? null;
 
+            $status = 'Absent';
+            $time = null;
+
+            if ($log) {
+                $logTime = $log->getDate();
+                $time = $logTime->format('h:i A');
+
+                if ($expectedTimeIn) {
+                    // Build expected time-in today with full date
+                    $expectedTimeToday = (new \DateTimeImmutable('today'))->setTime(
+                        (int) $expectedTimeIn->format('H'),
+                        (int) $expectedTimeIn->format('i'),
+                        (int) $expectedTimeIn->format('s')
+                    );
+
+                    // Add 5 minutes and 59 seconds grace period
+                    $graceTime = $expectedTimeToday->modify('+5 minutes 59 seconds');
+
+                    if ($logTime > $graceTime) {
+                        $status = 'Late';
+                        $totalLate++;
+                    } else {
+                        $status = 'Present';
+                        $totalPresent++;
+                    }
+                } else {
+                    // No timeIn configured, default to Present
+                    $status = 'Present';
+                }
+            } else {
+                $status = 'Absent';
+                $totalAbsent++;
+            }
+
             $studentAttendance[] = [
                 'student' => $student,
-                'isPresent' => $log !== null,
-                'time' => $log?->getDate()?->format('h:i A'),
+                'status' => $status,
+                'time' => $time,
             ];
         }
 
         return $this->render('attendance/view_attendance.html.twig', [
             'section' => $section,
             'studentAttendance' => $studentAttendance,
+            'totalStudents' => $totalStudents,
+            'totalPresent' => $totalPresent,
+            'totalLate' => $totalLate,
+            'totalAbsent' => $totalAbsent,
         ]);
     }
 }

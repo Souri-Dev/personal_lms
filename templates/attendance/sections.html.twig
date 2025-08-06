@@ -72,7 +72,7 @@
 										<td>{{ section.class.subjectName }}</td>
 										<td>{{ section.sectionName }}</td>
 										<td>
-											<a href="{{ path('section_attendance_logs', { id: section.id }) }}" class="btn btn-sm btn-secondary">View Attendance</a>
+											<a href="{{ path('section_attendance_view', { id: section.id }) }}" class="btn btn-sm btn-secondary">View Attendance</a>
 											<a href="{{ path('attendance_take', { id: section.id }) }}" class="btn btn-sm btn-primary">Take Attendance</a>
 										</td>
 									</tr>

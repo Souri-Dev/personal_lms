@@ -19,57 +19,57 @@
 			</ul>
 
 			<ul class="list-unstyled topnav-menu mb-0 d-flex align-items-center">
-
-				<li class="dropdown topbar-dropdown">
-					<a class="nav-link dropdown-toggle me-0" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
-						<img src="/images/flags/us.svg" alt="user-image img-fluid" class="w-100 rounded-2" height="20" width="20" id="selected-language-image"/>
-					</a>
-					<div
-						class="dropdown-menu dropdown-menu-end profile-dropdown">
-						<!-- item-->
-						<a href="javascript:void(0);" class="dropdown-item" data-translator-lang="en">
-							<img src="/images/flags/us.svg" alt="user-image" class="me-1 rounded" height="18" data-translator-image="">
-							<span class="align-middle">English</span>
+				{% if is_granted('ROLE_ADMIN') %}
+					<li class="dropdown topbar-dropdown">
+						<a class="nav-link dropdown-toggle me-0" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+							<img src="/images/flags/us.svg" alt="user-image img-fluid" class="w-100 rounded-2" height="20" width="20" id="selected-language-image"/>
 						</a>
+						<div
+							class="dropdown-menu dropdown-menu-end profile-dropdown">
+							<!-- item-->
+							<a href="javascript:void(0);" class="dropdown-item" data-translator-lang="en">
+								<img src="/images/flags/us.svg" alt="user-image" class="me-1 rounded" height="18" data-translator-image="">
+								<span class="align-middle">English</span>
+							</a>
 
-						<!-- item-->
-						<a href="javascript:void(0);" class="dropdown-item" data-translator-lang="hi">
-							<img src="/images/flags/in.svg" alt="user-image" class="me-1 rounded" height="18" data-translator-image="">
-							<span class="align-middle">Hindi</span>
-						</a>
+							<!-- item-->
+							<a href="javascript:void(0);" class="dropdown-item" data-translator-lang="hi">
+								<img src="/images/flags/in.svg" alt="user-image" class="me-1 rounded" height="18" data-translator-image="">
+								<span class="align-middle">Hindi</span>
+							</a>
 
-						<!-- item-->
-						<a href="javascript:void(0);" class="dropdown-item">
-							<img src="/images/flags/de.svg" alt="user-image" class="me-1 rounded" height="18">
-							<span class="align-middle">German</span>
-						</a>
+							<!-- item-->
+							<a href="javascript:void(0);" class="dropdown-item">
+								<img src="/images/flags/de.svg" alt="user-image" class="me-1 rounded" height="18">
+								<span class="align-middle">German</span>
+							</a>
 
-						<!-- item-->
-						<a href="javascript:void(0);" class="dropdown-item">
-							<img src="/images/flags/ca.svg" alt="user-image" class="me-1 rounded" height="18">
-							<span class="align-middle">Canada</span>
-						</a>
+							<!-- item-->
+							<a href="javascript:void(0);" class="dropdown-item">
+								<img src="/images/flags/ca.svg" alt="user-image" class="me-1 rounded" height="18">
+								<span class="align-middle">Canada</span>
+							</a>
 
-						<!-- item-->
-						<a href="javascript:void(0);" class="dropdown-item">
-							<img src="/images/flags/au.svg" alt="user-image" class="me-1 rounded" height="18">
-							<span class="align-middle">Australia</span>
-						</a>
+							<!-- item-->
+							<a href="javascript:void(0);" class="dropdown-item">
+								<img src="/images/flags/au.svg" alt="user-image" class="me-1 rounded" height="18">
+								<span class="align-middle">Australia</span>
+							</a>
 
-						<!-- item-->
-						<a href="javascript:void(0);" class="dropdown-item">
-							<img src="/images/flags/ru.svg" alt="user-image" class="me-1 rounded" height="18">
-							<span class="align-middle">Russian</span>
-						</a>
+							<!-- item-->
+							<a href="javascript:void(0);" class="dropdown-item">
+								<img src="/images/flags/ru.svg" alt="user-image" class="me-1 rounded" height="18">
+								<span class="align-middle">Russian</span>
+							</a>
 
-						<!-- item-->
-						<a href="javascript:void(0);" class="dropdown-item">
-							<img src="/images/flags/si.svg" alt="user-image" class="me-1 rounded" height="18">
-							<span class="align-middle">Italian</span>
-						</a>
-					</div>
-				</li>
-
+							<!-- item-->
+							<a href="javascript:void(0);" class="dropdown-item">
+								<img src="/images/flags/si.svg" alt="user-image" class="me-1 rounded" height="18">
+								<span class="align-middle">Italian</span>
+							</a>
+						</div>
+					</li>
+				{% endif %}
 				<!-- Button Trigger Customizer Offcanvas -->
 				<li class="d-none d-sm-flex">
 					<button type="button" class="btn nav-link" data-toggle="fullscreen">

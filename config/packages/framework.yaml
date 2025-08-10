@@ -5,8 +5,8 @@ framework:
     # Note that the session will be started ONLY if you read or write from it.
     session: true
 
-    trusted_hosts: 
-        - '^.*\.ngrok-free\.app$'
+    # trusted_hosts: 
+    #     - '^.*\.ngrok-free\.app$'
     
     trusted_proxies: ['127.0.0.1', 'REMOTE_ADDR']
 

@@ -47,12 +47,33 @@
 							</thead>
 							<tbody>
 								{% for section in sections %}
+									{% set session = sessionsBySection[section.id] ?? null %}
 									<tr>
 										<td>{{ section.class.subjectName }}</td>
 										<td>{{ section.sectionName }}</td>
 										<td>
-											<a href="{{ path('section_attendance_view', { id: section.id }) }}" class="btn btn-sm btn-secondary">View Attendance</a>
-											<a href="{{ path('attendance_take', { id: section.id }) }}" class="btn btn-sm btn-primary">Take Attendance</a>
+											<div class="d-flex flex-row align-items-center gap-1">
+												<a href="{{ path('section_attendance_view', { id: section.id }) }}" class="btn btn-sm btn-secondary">
+													View Attendance
+												</a>
+
+												<a href="{{ path('attendance_take', { id: section.id }) }}" class="btn btn-sm btn-primary">
+													Take Attendance
+												</a>
+
+												{% if session and session.isActive %}
+													<form action="{{ path('stop_attendance_session', { sectionId: section.id }) }}" method="post">
+														<button class="btn btn-sm btn-danger">Stop Attendance</button>
+													</form>
+												{% else %}
+													<form action="{{ path('start_attendance_session', { sectionId: section.id }) }}" method="post" class="m-0">
+														<button type="submit" class="btn btn-sm btn-success">
+															Start Attendance Today
+														</button>
+													</form>
+												{% endif %}
+
+											</div>
 										</td>
 									</tr>
 								{% else %}

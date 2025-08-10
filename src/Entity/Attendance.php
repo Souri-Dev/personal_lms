@@ -28,6 +28,10 @@ class Attendance
     #[ORM\Column(length: 50)]
     private ?string $status = null;
 
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    private ?AttendanceSession $attendanceSession = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -77,6 +81,18 @@ class Attendance
     public function setStatus(string $status): static
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    public function getAttendanceSession(): ?AttendanceSession
+    {
+        return $this->attendanceSession;
+    }
+
+    public function setAttendanceSession(AttendanceSession $attendanceSession): static
+    {
+        $this->attendanceSession = $attendanceSession;
 
         return $this;
     }

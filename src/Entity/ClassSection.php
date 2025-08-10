@@ -39,6 +39,12 @@ class ClassSection
     #[ORM\OneToMany(targetEntity: Attendance::class, mappedBy: 'classSection')]
     private Collection $attendances;
 
+    /**
+     * @var Collection<int, AttendanceSession>
+     */
+    #[ORM\OneToMany(targetEntity: AttendanceSession::class, mappedBy: 'classSection')]
+    private Collection $attendanceSessions;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -84,6 +90,7 @@ class ClassSection
     {
         $this->students = new ArrayCollection();
         $this->attendances = new ArrayCollection();
+        $this->attendanceSessions = new ArrayCollection();
     }
 
     public function getStudents(): Collection
@@ -134,6 +141,36 @@ class ClassSection
             // set the owning side to null (unless already changed)
             if ($attendance->getClassSection() === $this) {
                 $attendance->setClassSection(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, AttendanceSession>
+     */
+    public function getAttendanceSessions(): Collection
+    {
+        return $this->attendanceSessions;
+    }
+
+    public function addAttendanceSession(AttendanceSession $attendanceSession): static
+    {
+        if (!$this->attendanceSessions->contains($attendanceSession)) {
+            $this->attendanceSessions->add($attendanceSession);
+            $attendanceSession->setClassSection($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAttendanceSession(AttendanceSession $attendanceSession): static
+    {
+        if ($this->attendanceSessions->removeElement($attendanceSession)) {
+            // set the owning side to null (unless already changed)
+            if ($attendanceSession->getClassSection() === $this) {
+                $attendanceSession->setClassSection(null);
             }
         }
 

@@ -1,12 +1,12 @@
 {
-  "name": "dusty",
+  "name": "csit_dept_lms",
   "version": "1.0.0",
-  "description": "Dusty - Bootstrap Admin and Dashboard Template",
+  "description": "CSIT Department LMS",
   "scripts": {
     "gulp": "gulp",
     "build": "gulp build"
   },
-  "author": "zoyothemes",
+  "author": "souridev",
   "private": true,
   "type": "commonjs",
   "devDependencies": {

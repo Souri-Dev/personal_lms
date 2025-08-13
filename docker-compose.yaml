@@ -1,4 +1,3 @@
-
 services:
   mysql:
     image: mysql:8.0
@@ -10,7 +9,7 @@ services:
       MYSQL_USER: csit_dept_lms_user
       MYSQL_PASSWORD: csit_dept_lms_pass
     ports:
-      - "3308:3306"  # Host:Container
+      - "3308:3306"
     volumes:
       - mysql_data:/var/lib/mysql
     networks:
@@ -28,6 +27,18 @@ services:
       - "8081:80"
     depends_on:
       - mysql
+    networks:
+      - csit_dept_lms-network
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: csit-dept-lms-app
+    depends_on:
+      - mysql
+    ports:
+      - "8000:8000"
     networks:
       - csit_dept_lms-network
 

@@ -1,0 +1,21 @@
+# Dependencies
+/vendor
+/node_modules
+
+# Cache & logs
+/var
+*.log
+
+# Git & IDE
+.git
+.gitignore
+.idea
+.vscode
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Local env files
+.env.local
+.env.*.local

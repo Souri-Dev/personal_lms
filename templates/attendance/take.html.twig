@@ -121,11 +121,11 @@ successModal.show();
 fetchAttendanceLogs();
 
 // Resume scanning after a short delay (optional)
-setTimeout(() => startScanner(), 2000);
+setTimeout(() => startScanner(), 500);
 }).catch(error => {
 console.error("Error:", error);
 alert("An error occurred while marking attendance.");
-setTimeout(() => startScanner(), 2000);
+setTimeout(() => startScanner(), 500);
 });
 }).catch(err => console.error("Failed to stop scanner:", err));
 }

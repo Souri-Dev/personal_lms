@@ -289,12 +289,10 @@ class AttendanceController extends AbstractController
             return new JsonResponse(['success' => false, 'message' => 'Student or section not found.'], 404);
         }
 
-        // ✅ Check if student is in the section
         if (!$student->getClassSections()->contains($section)) {
             return new JsonResponse(['success' => false, 'message' => 'Student not in this section.'], 403);
         }
 
-        // ✅ Get or create attendance session for today
         $today = new \DateTimeImmutable('today');
         $session = $em->getRepository(AttendanceSession::class)->findOneBy([
             'classSection' => $section,
@@ -305,12 +303,11 @@ class AttendanceController extends AbstractController
             return new JsonResponse(['success' => false, 'message' => 'No active attendance session for today.'], 403);
         }
 
-        // ❌ Session not active
         if (!$session->isActive()) {
             return new JsonResponse(['success' => false, 'message' => 'Attendance session is already closed.'], 403);
         }
 
-        // ✅ Check if attendance already marked for this session
+
         $existing = $em->getRepository(Attendance::class)->findOneBy([
             'student' => $student,
             'attendanceSession' => $session,
@@ -526,7 +523,7 @@ class AttendanceController extends AbstractController
         }
 
         $session->setIsActive(false);
-        $session->setEndedAt(new \DateTimeImmutable()); // ✅ set endedAt here
+        $session->setEndedAt(new \DateTimeImmutable()); //
 
         $em->flush();
 

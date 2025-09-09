@@ -1,0 +1,104 @@
+{% extends 'layouts/public-layout.html.twig' %}
+
+{% set title = 'Student List' %}
+
+{% block css %}
+	<!-- Datatables css -->
+	<link href="/libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css" rel="stylesheet" type="text/css"/>
+	<link href="/libs/datatables.net-buttons-bs5/css/buttons.bootstrap5.min.css" rel="stylesheet" type="text/css"/>
+	<link href="/libs/datatables.net-keytable-bs5/css/keyTable.bootstrap5.min.css" rel="stylesheet" type="text/css"/>
+	<link href="/libs/datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css" rel="stylesheet" type="text/css"/>
+	<link href="/libs/datatables.net-select-bs5/css/select.bootstrap5.min.css" rel="stylesheet" type="text/css"/>
+	<link href="/libs/simple-datatables/style.css" rel="stylesheet" type="text/css"/>
+
+	<style>
+		.account-page {
+			background-color: var(--bs-body-bg) !important;
+		}
+	</style>
+{% endblock %}
+
+{% block content %}
+
+	<!-- Start Content-->
+	<div class="container-fluid">
+		<div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
+			<div class="flex-grow-1 d-flex align-items-center gap-4 mb-3 mb-sm-0">
+				<h4 class="fs-18 fw-semibold m-0">Student List</h4>
+				<button type="button" class="btn btn-sm btn-primary waves-effect waves-light">
+					<a href="{{ path('public_add_student') }}" class="btn btn-sm btn-primary waves-effect waves-light">
+						<i class="mdi mdi-plus text-white"></i>
+					</a>
+				</button>
+			</div>
+
+			<div class="text-end">
+				<ol class="breadcrumb m-0 py-0">
+					<li class="breadcrumb-item">
+						<a href="{{ path('public_add_student') }}">Add Student</a>
+					</li>
+					<li class="breadcrumb-item active">Student List</li>
+				</ol>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-12">
+				<div class="card">
+					<div class="card-body">
+						<table id="datatable" class="table dt-responsive table-responsive nowrap">
+							<thead>
+								<tr>
+									<th>Student Name</th>
+									<th>Course</th>
+									<th>Section</th>
+									<th>Action</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for students in students %}
+									<tr>
+										<td>{{ students.name }}</td>
+										<td>{{ students.course }}</td>
+										<td>{{ students.section }}</td>
+										<td class="text-start">
+											<a aria-label="View QR" class="btn btn-sm bg-success-subtle me-1" target="_blank" data-bs-toggle="tooltip" title="View QR" href="{{ path('app_student_qr', { id: students.id }) }}">
+												<i class="mdi mdi-eye fs-14 text-success"></i>
+											</a>
+										</td>
+									</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			<!-- end col -->
+		</div>
+		<!-- end row -->
+	</div>
+	<!-- container-fluid -->
+{% endblock %}
+{% block script %}<!-- Datatables js --><script src="/libs/datatables.net/js/jquery.dataTables.min.js"></script><!-- dataTables.bootstrap5 --><script src="/libs/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
+	<script src="/libs/datatables.net-buttons/js/dataTables.buttons.min.js"></script><!-- buttons.colVis --><script src="/libs/datatables.net-buttons/js/buttons.colVis.min.js"></script>
+	<script src="/libs/datatables.net-buttons/js/buttons.flash.min.js"></script>
+	<script src="/libs/datatables.net-buttons/js/buttons.html5.min.js"></script>
+	<script src="/libs/datatables.net-buttons/js/buttons.print.min.js"></script><!-- buttons.bootstrap5 --><script src="/libs/datatables.net-buttons-bs5/js/buttons.bootstrap5.min.js"></script><!-- dataTables.keyTable --><script src="/libs/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
+	<script src="/libs/datatables.net-keytable-bs5/js/keyTable.bootstrap5.min.js"></script><!-- dataTable.responsive --><script src="/libs/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+	<script src="/libs/datatables.net-responsive-bs5/js/responsive.bootstrap5.min.js"></script><!-- dataTables.select --><script src="/libs/datatables.net-select/js/dataTables.select.min.js"></script>
+	<script src="/libs/datatables.net-select-bs5/js/select.bootstrap5.min.js"></script><!-- Datatable Demo App Js --><script src="/js/pages/datatable.init.js"></script>
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+const tooltipTriggerList = [].slice.call(document.querySelectorAll('[title]'));
+tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+new bootstrap.Tooltip(tooltipTriggerEl);
+});
+});
+	</script>
+
+	<script>
+		$(document).ready(function () {
+$('#datatable').DataTable();
+});
+	</script>
+{% endblock %}

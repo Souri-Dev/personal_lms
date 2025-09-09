@@ -50,19 +50,23 @@ class ClassSectionTypeForm extends AbstractType
                     'class' => Student::class,
                     'choice_label' => 'name',
                     'multiple' => true,
-                    'expanded' => true,
+                    'expanded' => false,
                     'required' => false,
                     'row_attr' => [
                         'class' => 'flex flex-col gap-2',
                     ],
-                    'choice_attr' => function () {
-                        return ['class' => 'flex items-center gap-2'];
+                    'choice_attr' => function (Student $student) {
+                        return [
+                            'class' => 'flex items-center gap-2',
+                            'data-section' => $student->getSection() ?? '',
+                        ];
                     },
                     'label_attr' => [
                         'class' => 'col-form-label',
                     ],
                     'query_builder' => function (EntityRepository $er) use ($options) {
                         $schoolClass = $options['school_class'];
+                        $section = $options['section'];
                         $excludedStudentIds = [];
 
                         if ($schoolClass) {
@@ -79,6 +83,8 @@ class ClassSectionTypeForm extends AbstractType
                             $qb->where($qb->expr()->notIn('s.id', ':excluded'))
                                 ->setParameter('excluded', $excludedStudentIds);
                         }
+
+
 
                         return $qb;
                     },

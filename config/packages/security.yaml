@@ -49,6 +49,10 @@ security:
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
         - { path: ^/login, roles: PUBLIC_ACCESS }
+        - { path: ^/add-student, roles: PUBLIC_ACCESS }
+        - { path: ^/students-list, roles: PUBLIC_ACCESS }
+        - { path: ^/student/\d+/qr, roles: PUBLIC_ACCESS }
+        # - { path: ^/register, roles: PUBLIC_ACCESS }
         - { path: ^/api, roles: PUBLIC_ACCESS }
         - { path: ^/, roles: ROLE_USER }
         - { path: ^/dashboard, roles: ROLE_USER }

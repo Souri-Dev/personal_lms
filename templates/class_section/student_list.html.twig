@@ -77,60 +77,134 @@
 			</div>
 		</div>
 		<!-- end row -->
+
 	</div>
-</div>
 
-<div class="modal fade bs-example-modal-xl" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
-	<div class="modal-dialog modal-xl">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title" id="myExtraLargeModalLabel">Assign Students</h5>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-			</div>
-			<div class="modal-body">
-				<div class="col-lg-12 ms-lg-auto">
-					<div class="mt-5 mt-lg-4">
-						{{ form_start(form, {'attr': {'class': 'needs-validation'}}) }}
-						<div class="row mb-4">
-							{{ form_label(form.class, 'Subject', {'label_attr': {'class': 'col-sm-3 col-form-label'}}) }}
-							<div class="col-sm-9">
-								{{ form_widget(form.class, {'attr': {'class': 'form-control', 'placeholder': 'Enter Section'}}) }}
-								{{ form_errors(form.class) }}
+
+	<div class="modal fade bs-example-modal-xl" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-xl">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="myExtraLargeModalLabel">Assign Students</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div class="col-lg-12 ms-lg-auto">
+						<div class="mt-5 mt-lg-4">
+							{{ form_start(form, {'attr': {'class': 'needs-validation'}}) }}
+							<div class="row mb-4">
+								{{ form_label(form.class, 'Subject', {'label_attr': {'class': 'col-sm-3 col-form-label'}}) }}
+								<div class="col-sm-9">
+									{{ form_widget(form.class, {'attr': {'class': 'form-control', 'placeholder': 'Enter Section'}}) }}
+									{{ form_errors(form.class) }}
+								</div>
 							</div>
-						</div>
 
-						<div class="row mb-4">
-							{{ form_label(form.students, 'Students', {'label_attr': {'class': 'col-sm-3 col-form-label'}}) }}
-							<div class="col-sm-9">
-								{{ form_widget(form.students, {'attr': {'class': 'form-control', 'placeholder': 'Enter Section'}}) }}
-								{{ form_errors(form.students) }}
+							{# Collect unique sections from student choices #}
+							{% set sections = [] %}
+							{% for choice in form.students.vars.choices %}
+								{% set sec = choice.data.section %}
+								{% if sec is not empty and sec not in sections %}
+									{% set sections = sections|merge([sec]) %}
+								{% endif %}
+							{% endfor %}
+
+							<div class="row mb-4">
+								<label for="sectionFilter" class="col-sm-3 col-form-label">Filter by Section:</label>
+								<div class="col-sm-9">
+									<select id="sectionFilter" class="form-control">
+										<option value="">All</option>
+										{% for sec in sections %}
+											<option value="{{ sec }}">{{ sec }}</option>
+										{% endfor %}
+									</select>
+								</div>
 							</div>
-						</div>
-						<div class="d-flex justify-content-end">
-							<button class="btn btn-primary ml-auto">Add Class</button>
-						</div>
 
-						{{ form_end(form) }}
+							<div class="row mb-4">
+								{{ form_label(form.students, 'Students', {'label_attr': {'class': 'col-sm-3 col-form-label'}}) }}
+								<div class="col-sm-9">
+									{{ form_widget(form.students, {'attr': {'class': 'form-control', 'placeholder': 'Add Student'}}) }}
+									{{ form_errors(form.students) }}
+								</div>
+							</div>
+
+							<div class="d-flex justify-content-end">
+								<button class="btn btn-primary ml-auto">Add Student</button>
+							</div>
+
+							{{ form_end(form) }}
+
+						</div>
 					</div>
 				</div>
 			</div>
+			<!-- /.modal-content -->
 		</div>
-		<!-- /.modal-content -->
+		<!-- /.modal-dialog -->
 	</div>
-	<!-- /.modal-dialog -->
-</div>{% endblock %}{% block script %}<!-- Datatables js --><script src="/libs/datatables.net/js/jquery.dataTables.min.js"></script><!-- dataTables.bootstrap5 --><script src="/libs/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
-<script src="/libs/datatables.net-buttons/js/dataTables.buttons.min.js"></script><!-- buttons.colVis --><script src="/libs/datatables.net-buttons/js/buttons.colVis.min.js"></script>
-<script src="/libs/datatables.net-buttons/js/buttons.flash.min.js"></script>
-<script src="/libs/datatables.net-buttons/js/buttons.html5.min.js"></script>
-<script src="/libs/datatables.net-buttons/js/buttons.print.min.js"></script><!-- buttons.bootstrap5 --><script src="/libs/datatables.net-buttons-bs5/js/buttons.bootstrap5.min.js"></script><!-- dataTables.keyTable --><script src="/libs/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
-<script src="/libs/datatables.net-keytable-bs5/js/keyTable.bootstrap5.min.js"></script><!-- dataTable.responsive --><script src="/libs/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
-<script src="/libs/datatables.net-responsive-bs5/js/responsive.bootstrap5.min.js"></script><!-- dataTables.select --><script src="/libs/datatables.net-select/js/dataTables.select.min.js"></script>
-<script src="/libs/datatables.net-select-bs5/js/select.bootstrap5.min.js"></script><!-- Datatable Demo App Js --><script src="/js/pages/datatable.init.js"></script>
-<script>
-	document.addEventListener('DOMContentLoaded', function () {
-const tooltipTriggerList = [].slice.call(document.querySelectorAll('[title]'));
-tooltipTriggerList.forEach(function (tooltipTriggerEl) {
-new bootstrap.Tooltip(tooltipTriggerEl);
+{% endblock %}
+{% block script %}
+	<!-- Datatables js -->
+	<script src="/libs/datatables.net/js/jquery.dataTables.min.js"></script>
+
+	<!-- dataTables.bootstrap5 -->
+	<script src="/libs/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
+	<script src="/libs/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+
+	<!-- buttons.colVis -->
+	<script src="/libs/datatables.net-buttons/js/buttons.colVis.min.js"></script>
+	<script src="/libs/datatables.net-buttons/js/buttons.flash.min.js"></script>
+	<script src="/libs/datatables.net-buttons/js/buttons.html5.min.js"></script>
+	<script src="/libs/datatables.net-buttons/js/buttons.print.min.js"></script>
+
+	<!-- buttons.bootstrap5 -->
+	<script src="/libs/datatables.net-buttons-bs5/js/buttons.bootstrap5.min.js"></script>
+
+	<!-- dataTables.keyTable -->
+	<script src="/libs/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
+	<script src="/libs/datatables.net-keytable-bs5/js/keyTable.bootstrap5.min.js"></script>
+
+	<!-- dataTable.responsive -->
+	<script src="/libs/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+	<script src="/libs/datatables.net-responsive-bs5/js/responsive.bootstrap5.min.js"></script>
+
+	<!-- dataTables.select -->
+	<script src="/libs/datatables.net-select/js/dataTables.select.min.js"></script>
+	<script src="/libs/datatables.net-select-bs5/js/select.bootstrap5.min.js"></script>
+
+	<!-- Datatable Demo App Js -->
+	<script src="/js/pages/datatable.init.js"></script>
+	<script>
+		console.log("Dropdown:", selected, " Student section:", section);
+	</script>
+
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+const filterSelect = document.getElementById('sectionFilter');
+const studentSelect = document.getElementById('{{ form.students.vars.id }}');
+
+filterSelect.addEventListener('change', function () {
+const selectedSection = this.value;
+
+Array.from(studentSelect.options).forEach(option => {
+if (! selectedSection || option.dataset.section === selectedSection) {
+option.hidden = false;
+} else {
+option.hidden = true;
+}
+});
+
+// Reset selection if the selected option becomes hidden
+if (studentSelect.selectedOptions.length > 0) {
+const selected = studentSelect.selectedOptions[0];
+if (selected.hidden) {
+studentSelect.value = '';
+}
+}
 });
 });
-</script>{% endblock %}
+	</script>
+
+
+{% endblock %}

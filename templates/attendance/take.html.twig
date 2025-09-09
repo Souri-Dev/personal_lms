@@ -112,7 +112,7 @@ headers: {
 body: JSON.stringify(
 {qr: decodedText, sectionId: sectionId}
 )
-}).then(response => response.json()).then(data => { // Update modal content and show it
+}).then(response => response.json()).then(data => {
 document.getElementById('successModalBody').innerText = data.message;
 
 const successModal = new bootstrap.Modal(document.getElementById('successModal'));

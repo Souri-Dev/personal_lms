@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html data-menu-color="dark" data-bs-theme="dark" data-sidebar="default">
+
+	<head>
+		{{ include('partials/title-meta.html.twig') }}
+		{% block css %}{% endblock %}
+		{{ include('partials/head-css.html.twig') }}
+	</head>
+
+	{{ include('partials/body.html.twig') }}
+
+	<div id="app-layout">
+
+		{{ include('partials/public-topbar.html.twig') }}
+
+		<script src="/js/app.js"></script>
+
+
+		<div class="content-page">
+
+			<div class="content">
+				{% for label, messages in app.flashes %}
+					{% for message in messages %}
+						<div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+							{{ message }}
+							<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+						</div>
+					{% endfor %}
+				{% endfor %}
+				{% block content %}{% endblock %}
+
+			</div>
+
+			{{ include('partials/footer.html.twig') }}
+
+		</div>
+	</div>
+
+	{{ include('partials/vendor.html.twig') }}
+
+	{% block script %}{% endblock %}
+
+	<script src="/js/app.js"></script>
+</html></body></html>

@@ -43,12 +43,11 @@ final class StudentController extends AbstractController
                 $em->persist($student);
                 $em->flush();
 
-                // ✅ Flash success message
                 $this->addFlash('success', 'Student added successfully.');
 
                 return $this->redirectToRoute('app_student_index');
             } else {
-                // ❌ Flash error message
+
                 $this->addFlash('danger', 'There was an error adding the student. Please check for duplicate name or missing fields.');
             }
         }
@@ -239,12 +238,10 @@ final class StudentController extends AbstractController
                 $em->persist($student);
                 $em->flush();
 
-                // ✅ Flash success message
                 $this->addFlash('success', 'Student added successfully.');
 
                 return $this->redirectToRoute('app_student_index');
             } else {
-                // ❌ Flash error message
                 $this->addFlash('danger', 'There was an error adding the student. Please check for duplicate name or missing fields.');
             }
         }

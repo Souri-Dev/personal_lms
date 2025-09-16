@@ -121,7 +121,7 @@
 						<table id="datatable" class="table dt-responsive table-responsive nowrap">
 							<thead>
 								<tr>
-									<th>Student ID</th>
+									{# <th>Student ID</th> #}
 									<th>Student Name</th>
 									<th>Status</th>
 									<th>Time</th>
@@ -130,7 +130,7 @@
 							<tbody>
 								{% for entry in studentAttendance %}
 									<tr>
-										<td>{{ entry.student.studentNumber }}</td>
+										{# <td>{{ entry.student.studentNumber }}</td> #}
 										<td>{{ entry.student.name }}</td>
 										<td>
 											{% if entry.status == 'Present' %}

@@ -51,7 +51,7 @@
 									<th scope="col">Name</th>
 									<th scope="col">Course</th>
 									<th scope="col">Section</th>
-									<th scope="col">QR</th>
+									<th scope="col">Actions</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -64,9 +64,12 @@
 										<td>{{ student.course }}</td>
 										<td>{{ student.section }}</td>
 										<td>
-											<a href="{{ path('app_student_qr', { id: student.id }) }}" target="_blank" class="text-body font-size-18">
-												<img src="{{ path('app_student_qr', {id: student.id}) }}" alt="QR Code" width="100">
+											<a aria-label="View QR" class="btn btn-sm bg-success-subtle me-1" target="_blank" data-bs-toggle="tooltip" title="View QR" href="{{ path('app_student_qr', { id: student.id }) }}">
+												<i class="mdi mdi-eye fs-14 text-success"></i>
 											</a>
+											<button type="button" class="btn btn-sm bg-danger-subtle" title="Delete" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{ student.id }}_{{ section.id }}">
+												<i class="mdi mdi-delete fs-14 text-danger"></i>
+											</button>
 										</td>
 									</tr>
 								{% endfor %}
@@ -97,6 +100,26 @@
 								<div class="col-sm-9">
 									{{ form_widget(form.class, {'attr': {'class': 'form-control', 'placeholder': 'Enter Section'}}) }}
 									{{ form_errors(form.class) }}
+								</div>
+							</div>
+
+							{% set courses = [] %}
+							{% for choice in form.students.vars.choices %}
+								{% set course = choice.data.course %}
+								{% if course is not empty and course not in courses %}
+									{% set courses = courses|merge([course]) %}
+								{% endif %}
+							{% endfor %}
+
+							<div class="row mb-4">
+								<label for="courseFilter" class="col-sm-3 col-form-label">Filter by Course:</label>
+								<div class="col-sm-9">
+									<select id="courseFilter" class="form-control">
+										<option value="">All</option>
+										{% for c in courses %}
+											<option value="{{ c }}">{{ c }}</option>
+										{% endfor %}
+									</select>
 								</div>
 							</div>
 
@@ -143,6 +166,34 @@
 		</div>
 		<!-- /.modal-dialog -->
 	</div>
+
+	{% for student in section.students %}
+		<!-- Modal -->
+		<div class="modal fade" id="staticBackdrop{{ student.id }}_{{ section.id }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h1 class="modal-title fs-5" id="staticBackdropLabel">Confirm Deletion</h1>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<p>Are you sure you want to delete student
+							<strong>{{ student.name }}</strong>? This action cannot be undone.</p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+						<form method="post" action="{{ path('app_class_student_delete', { id: schoolClass.id, sectionId: section.id, studentId: student.id }) }}" style="display:inline;">
+							<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ student.id) }}">
+							<button type="submit" class="btn btn-primary">Yes, Delete</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- end col -->
+	{% endfor %}
+
 {% endblock %}
 {% block script %}
 	<!-- Datatables js -->
@@ -181,28 +232,32 @@
 
 	<script>
 		document.addEventListener('DOMContentLoaded', function () {
-const filterSelect = document.getElementById('sectionFilter');
+const sectionFilter = document.getElementById('sectionFilter');
+const courseFilter = document.getElementById('courseFilter');
 const studentSelect = document.getElementById('{{ form.students.vars.id }}');
 
-filterSelect.addEventListener('change', function () {
-const selectedSection = this.value;
+function applyFilters() {
+const selectedSection = sectionFilter.value;
+const selectedCourse = courseFilter.value;
 
 Array.from(studentSelect.options).forEach(option => {
-if (! selectedSection || option.dataset.section === selectedSection) {
-option.hidden = false;
-} else {
-option.hidden = true;
-}
+const matchSection = ! selectedSection || option.dataset.section === selectedSection;
+const matchCourse = ! selectedCourse || option.dataset.course === selectedCourse;
+
+option.hidden = !(matchSection && matchCourse);
 });
 
-// Reset selection if the selected option becomes hidden
+// Reset if hidden
 if (studentSelect.selectedOptions.length > 0) {
 const selected = studentSelect.selectedOptions[0];
 if (selected.hidden) {
 studentSelect.value = '';
 }
 }
-});
+}
+
+sectionFilter.addEventListener('change', applyFilters);
+courseFilter.addEventListener('change', applyFilters);
 });
 	</script>
 

@@ -12,6 +12,7 @@ use App\Entity\ClassSection;
 use App\Form\SchoolClassTypeForm;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Entity\Student;
 
 
 final class ClassSectionController extends AbstractController
@@ -118,6 +119,37 @@ final class ClassSectionController extends AbstractController
         return $this->render('class_section/index.html.twig', [
             'section' => $section,
             'form' => $form->createView(),
+        ]);
+    }
+
+    #[Route(
+        '/subject/{id}/sections/{sectionId}/list_of_students/{studentId}/delete',
+        name: 'app_class_student_delete',
+        methods: ['POST']
+    )]
+    public function delete(
+        #[MapEntity(id: 'studentId')] Student $student,
+        #[MapEntity(id: 'id')] SchoolClass $schoolClass,
+        #[MapEntity(id: 'sectionId')] ClassSection $section,
+        Request $request,
+        EntityManagerInterface $entityManager
+    ): Response {
+        if ($this->isCsrfTokenValid('delete' . $student->getId(), $request->request->get('_token'))) {
+            // Detach student from this section only
+            $section->removeStudent($student);
+
+            $entityManager->persist($section); // update relation
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Student removed from section successfully.');
+        } else {
+            $this->addFlash('danger', 'Invalid CSRF token. Please try again.');
+        }
+
+        // Redirect back to the list of students in this section
+        return $this->redirectToRoute('app_subject_sections_list_of_students', [
+            'id'        => $schoolClass->getId(),
+            'sectionId' => $section->getId(),
         ]);
     }
 }

@@ -59,6 +59,7 @@ class ClassSectionTypeForm extends AbstractType
                         return [
                             'class' => 'flex items-center gap-2',
                             'data-section' => $student->getSection() ?? '',
+                            'data-course' => $student->getCourse() ?? '',
                         ];
                     },
                     'label_attr' => [

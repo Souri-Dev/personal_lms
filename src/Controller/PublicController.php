@@ -45,7 +45,7 @@ class PublicController extends AbstractController
     #[Route('/students-list', name: 'public_student_list')]
     public function listStudents(StudentRepository $studentRepository): Response
     {
-        $students = $studentRepository->findAll();
+        $students = $studentRepository->findBy([], ['id' => 'DESC']);
         return $this->render('public/index.html.twig', [
             'students' => $students,
         ]);

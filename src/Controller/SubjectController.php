@@ -31,7 +31,6 @@ final class SubjectController extends AbstractController
             // redirect or render as needed
             return $this->redirectToRoute('app_subject', []);
         } elseif ($form->isSubmitted()) {
-            // ❌ Flash error message
             $this->addFlash('danger', 'There was an error adding the subject. Please check for duplicate name or missing fields.');
         }
 

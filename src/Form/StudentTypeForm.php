@@ -7,8 +7,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-
-
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class StudentTypeForm extends AbstractType
 {
@@ -17,8 +16,22 @@ class StudentTypeForm extends AbstractType
         $builder
             ->add('studentNumber')
             ->add('name')
-            ->add('course')
-            ->add('section')
+            ->add('course', ChoiceType::class, [
+                'choices'  => [
+                    'BSINT' => 'BSINT',
+                    'BSCS' => 'BSCS',
+                ],
+                'placeholder' => 'Choose a course',
+            ])
+            ->add('section', ChoiceType::class, [
+                'choices'  => [
+                    'A' => 'A',
+                    'B' => 'B',
+                    'C' => 'C',
+                    'D' => 'D',
+                ],
+                'placeholder' => 'Choose a section',
+            ])
             // ->add('qr')
         ;
     }

@@ -59,8 +59,6 @@ class AttendanceController extends AbstractController
 
 
 
-
-
     // #[Route('/attendance/section/{id}', name: 'attendance_take')]
     // public function takeAttendance(ClassSection $classSection, EntityManagerInterface $em): Response
     // {

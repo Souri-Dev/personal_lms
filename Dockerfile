@@ -22,8 +22,9 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
-# Copy composer files
-COPY composer.json composer.lock symfony.lock* ./
+# Copy composer files (symfony.lock is optional)
+COPY composer.json ./
+COPY composer.lock ./
 
 # Install PHP dependencies (production only, optimized)
 RUN composer install --no-dev --optimize-autoloader --no-scripts --no-interaction --prefer-dist

@@ -1,10 +1,11 @@
-# Dependencies
+# Dependencies (will be built in Docker)
 /vendor
 /node_modules
 
-# Cache & logs
-/var
-*.log
+# Cache & logs (will be created in container)
+/var/cache/*
+/var/log/*
+!var/.gitkeep
 
 # Git & IDE
 .git
@@ -19,3 +20,12 @@ Thumbs.db
 # Local env files
 .env.local
 .env.*.local
+
+# Docker files
+docker-compose*.yaml
+Dockerfile
+.dockerignore
+
+# Documentation
+*.md
+README.md

@@ -35,10 +35,17 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: csit-dept-lms-app
+    restart: unless-stopped
     depends_on:
       - mysql
     ports:
-      - "8000:8000"
+      - "8000:80"
+    environment:
+      APP_ENV: prod
+      APP_SECRET: ${APP_SECRET:-change_this_secret_in_production}
+      DATABASE_URL: mysql://csit_dept_lms_user:csit_dept_lms_pass@mysql:3306/csit_dept_lms
+    volumes:
+      - ./var/log:/var/www/html/var/log
     networks:
       - csit_dept_lms-network
 

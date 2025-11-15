@@ -1,0 +1,29 @@
+services:
+  # Web Service
+  - type: web
+    name: csit-dept-lms
+    env: docker
+    region: oregon
+    plan: free
+    branch: master
+    healthCheckPath: /login
+    envVars:
+      - key: APP_ENV
+        value: prod
+      - key: APP_SECRET
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: csit-dept-lms-db
+          property: connectionString
+      - key: MESSENGER_TRANSPORT_DSN
+        value: doctrine://default?auto_setup=0
+      - key: MAILER_DSN
+        value: null://null
+
+# Database
+databases:
+  - name: csit-dept-lms-db
+    databaseName: csit_dept_lms
+    user: csit_dept_lms_user
+    plan: free

@@ -65,28 +65,15 @@ RUN mkdir -p var/cache var/log \
 COPY docker/nginx.conf /etc/nginx/sites-available/default
 COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-# Create entrypoint script
-RUN echo '#!/bin/sh\n\
-set -e\n\
-\n\
-# Wait for database to be ready\n\
-until php bin/console dbal:run-sql "SELECT 1" > /dev/null 2>&1; do\n\
-  echo "Waiting for database..."\n\
-  sleep 2\n\
-done\n\
-\n\
-# Run migrations\n\
-php bin/console doctrine:migrations:migrate --no-interaction\n\
-\n\
-# Clear and warm up cache\n\
-php bin/console cache:clear --env=prod\n\
-php bin/console cache:warmup --env=prod\n\
-\n\
-# Start supervisord\n\
-exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf\n\
-' > /usr/local/bin/docker-entrypoint.sh \
-    && chmod +x /usr/local/bin/docker-entrypoint.sh
+# Copy start script
+COPY start.sh /usr/local/bin/start.sh
+RUN chmod +x /usr/local/bin/start.sh
+
+# Set proper permissions for cache and log directories
+RUN mkdir -p var/cache var/log public/uploads \
+    && chown -R www-data:www-data var public \
+    && chmod -R 775 var
 
 EXPOSE 80
 
-ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
+CMD ["/usr/local/bin/start.sh"]

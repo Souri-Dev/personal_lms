@@ -211,7 +211,9 @@
 						<!-- item-->
 						<div class="dropdown-header noti-title">
 							<h6 class="text-overflow m-0">Welcome
-								{{ app.user.userIdentifier }}!</h6>
+								{% if app.user %}
+									{{ app.user.userIdentifier }}{% else %}Guest
+								{% endif %}!</h6>
 						</div>
 
 						<!-- item-->

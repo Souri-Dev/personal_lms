@@ -53,22 +53,28 @@
 										<td>{{ section.sectionName }}</td>
 										<td>
 											<div class="d-flex flex-row align-items-center gap-1">
-												<a href="{{ path('section_attendance_view', { id: section.id }) }}" class="btn btn-sm btn-secondary">
-													View Attendance
+												<a href="{{ path('section_attendance_view', { id: section.id }) }}" class="btn btn-sm bg-success-subtle" title="View Attendance">
+													<i class="mdi mdi-eye fs-14 text-success"></i>
 												</a>
 
-												<a href="{{ path('attendance_take', { id: section.id }) }}" class="btn btn-sm btn-primary">
-													Take Attendance
+												<a href="{{ path('attendance_take', { id: section.id }) }}" class="btn btn-sm bg-primary-subtle" title="Take Attendance">
+													<i class="mdi mdi-clipboard-check fs-14 text-primary"></i>
+												</a>
+
+												<a href="{{ path('attendance_export_excel', { id: section.id }) }}" class="btn btn-sm bg-info-subtle" title="Export to Excel">
+													<i class="mdi mdi-file-excel fs-14 text-info"></i>
 												</a>
 
 												{% if session and session.isActive %}
 													<form action="{{ path('stop_attendance_session', { sectionId: section.id }) }}" method="post">
-														<button class="btn btn-sm btn-danger">Stop Attendance</button>
+														<button class="btn btn-sm bg-warning-subtle" type="submit" title="Stop Attendance">
+															<i class="mdi mdi-stop-circle fs-14 text-warning"></i>
+														</button>
 													</form>
 												{% else %}
 													<form action="{{ path('start_attendance_session', { sectionId: section.id }) }}" method="post" class="m-0">
-														<button type="submit" class="btn btn-sm btn-success">
-															Start Attendance Today
+														<button type="submit" class="btn btn-sm bg-danger-subtle" title="Start Attendance Today">
+															<i class="mdi mdi-play-circle fs-14 text-danger"></i>
 														</button>
 													</form>
 												{% endif %}

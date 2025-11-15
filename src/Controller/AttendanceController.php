@@ -16,6 +16,10 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use App\Entity\AttendanceSession;
 use Doctrine\ORM\EntityManager;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
 
 class AttendanceController extends AbstractController
 {
@@ -57,31 +61,6 @@ class AttendanceController extends AbstractController
         ]);
     }
 
-
-
-    // #[Route('/attendance/section/{id}', name: 'attendance_take')]
-    // public function takeAttendance(ClassSection $classSection, EntityManagerInterface $em): Response
-    // {
-    //     $todayStart = new \DateTimeImmutable('today midnight');
-    //     $todayEnd = $todayStart->modify('+1 day');
-
-    //     $attendanceLogs = $em->getRepository(Attendance::class)->createQueryBuilder('a')
-    //         ->where('a.classSection = :section')
-    //         ->andWhere('a.date >= :start')
-    //         ->andWhere('a.date < :end')
-    //         ->setParameter('section', $classSection)
-    //         ->setParameter('start', $todayStart)
-    //         ->setParameter('end', $todayEnd)
-    //         ->orderBy('a.date', 'DESC')
-    //         ->getQuery()
-    //         ->getResult();
-
-    //     return $this->render('attendance/take.html.twig', [
-    //         'section' => $classSection,
-    //         'students' => $classSection->getStudents(),
-    //         'attendanceLogs' => $attendanceLogs,
-    //     ]);
-    // }
 
     #[Route('/attendance/section/{id}', name: 'attendance_take')]
     public function takeAttendance(ClassSection $classSection, EntityManagerInterface $em): Response
@@ -527,5 +506,165 @@ class AttendanceController extends AbstractController
 
         $this->addFlash('success', 'Attendance session stopped.');
         return $this->redirectToRoute('attendance_sections', ['id' => $section->getClass()->getId()]);
+    }
+
+    #[Route('/attendance/section/{id}/export-excel', name: 'attendance_export_excel')]
+    public function exportAttendanceToExcel(ClassSection $section, EntityManagerInterface $em): Response
+    {
+        // Get all students in this section
+        $students = $section->getStudents()->toArray();
+
+        // Sort students by name for consistent ordering
+        usort($students, fn($a, $b) => strcmp($a->getName(), $b->getName()));
+
+        // Get all attendance records for this section
+        $attendanceRecords = $em->getRepository(Attendance::class)
+            ->createQueryBuilder('a')
+            ->where('a.classSection = :section')
+            ->setParameter('section', $section)
+            ->orderBy('a.date', 'ASC')
+            ->getQuery()
+            ->getResult();
+
+        // Group attendance by date and student
+        $attendanceByDate = [];
+        $dates = [];
+        $expectedTimeIn = $section->getTimeIn();
+
+        foreach ($attendanceRecords as $record) {
+            $date = $record->getDate()->format('Y-m-d');
+            if (!in_array($date, $dates)) {
+                $dates[] = $date;
+            }
+
+            $studentId = $record->getStudent()->getId();
+
+            // Determine status (Present=1, Absent=0, Late=3)
+            $status = 1; // Default to present
+
+            if ($expectedTimeIn && $record->getDate()) {
+                $logTime = $record->getDate();
+                $expectedTimeToday = (new \DateTimeImmutable($date))->setTime(
+                    (int) $expectedTimeIn->format('H'),
+                    (int) $expectedTimeIn->format('i'),
+                    (int) $expectedTimeIn->format('s')
+                );
+                $graceTime = $expectedTimeToday->modify('+5 minutes 59 seconds');
+
+                if ($logTime > $graceTime) {
+                    $status = 3; // Late
+                }
+            }
+
+            $attendanceByDate[$date][$studentId] = $status;
+        }
+
+        // Create spreadsheet
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // Set sheet title
+        $sheetTitle = substr($section->getSectionName() . ' - ' . $section->getClass()->getSubjectName(), 0, 31);
+        $sheet->setTitle($sheetTitle);
+
+        // Header styling
+        $headerStyle = [
+            'font' => ['bold' => true, 'color' => ['rgb' => 'FFFFFF']],
+            'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => '4472C4']],
+            'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
+        ];
+
+        // Set headers
+        $sheet->setCellValue('A1', 'Student Name');
+        $sheet->getStyle('A1')->applyFromArray($headerStyle);
+        $sheet->getColumnDimension('A')->setWidth(30);
+
+        // Add date headers
+        $col = 2; // Start from column B
+        foreach ($dates as $date) {
+            $columnLetter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col);
+            $sheet->setCellValue($columnLetter . '1', date('M d, Y', strtotime($date)));
+            $sheet->getStyle($columnLetter . '1')->applyFromArray($headerStyle);
+            $sheet->getColumnDimension($columnLetter)->setWidth(15);
+            $col++;
+        }
+
+        // Fill in student data
+        $row = 2;
+        foreach ($students as $student) {
+            $sheet->setCellValue('A' . $row, $student->getName());
+
+            $col = 2;
+            foreach ($dates as $date) {
+                $columnLetter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col);
+                $studentId = $student->getId();
+
+                // Check if student has attendance for this date
+                $value = $attendanceByDate[$date][$studentId] ?? 0; // 0 = Absent
+                $sheet->setCellValue($columnLetter . $row, $value);
+
+                // Apply color coding
+                if ($value == 1) {
+                    // Present - Green
+                    $sheet->getStyle($columnLetter . $row)->getFill()
+                        ->setFillType(Fill::FILL_SOLID)
+                        ->getStartColor()->setRGB('C6EFCE');
+                } elseif ($value == 3) {
+                    // Late - Yellow
+                    $sheet->getStyle($columnLetter . $row)->getFill()
+                        ->setFillType(Fill::FILL_SOLID)
+                        ->getStartColor()->setRGB('FFEB9C');
+                } else {
+                    // Absent - Red
+                    $sheet->getStyle($columnLetter . $row)->getFill()
+                        ->setFillType(Fill::FILL_SOLID)
+                        ->getStartColor()->setRGB('FFC7CE');
+                }
+
+                // Center align the values
+                $sheet->getStyle($columnLetter . $row)->getAlignment()
+                    ->setHorizontal(Alignment::HORIZONTAL_CENTER);
+
+                $col++;
+            }
+            $row++;
+        }
+
+        // Add legend
+        $row += 2;
+        $sheet->setCellValue('A' . $row, 'Legend:');
+        $sheet->getStyle('A' . $row)->getFont()->setBold(true);
+        $row++;
+        $sheet->setCellValue('A' . $row, '1 = Present');
+        $sheet->getStyle('A' . $row)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('C6EFCE');
+        $row++;
+        $sheet->setCellValue('A' . $row, '0 = Absent');
+        $sheet->getStyle('A' . $row)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('FFC7CE');
+        $row++;
+        $sheet->setCellValue('A' . $row, '3 = Late');
+        $sheet->getStyle('A' . $row)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('FFEB9C');
+
+        // Create Excel file
+        $writer = new Xlsx($spreadsheet);
+        $filename = sprintf(
+            'Attendance_%s_%s_%s.xlsx',
+            $section->getClass()->getSubjectName(),
+            $section->getSectionName(),
+            date('Y-m-d')
+        );
+
+        // Create response
+        $response = new Response();
+        $response->headers->set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        $response->headers->set('Content-Disposition', 'attachment;filename="' . $filename . '"');
+        $response->headers->set('Cache-Control', 'max-age=0');
+
+        // Write to output
+        ob_start();
+        $writer->save('php://output');
+        $content = ob_get_clean();
+        $response->setContent($content);
+
+        return $response;
     }
 }

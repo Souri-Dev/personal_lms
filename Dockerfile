@@ -1,5 +1,5 @@
-# Stage 1: Build dependencies
-FROM php:8.2-fpm AS builder
+# Use PHP-FPM base image
+FROM php:8.2-fpm
 
 # Install system dependencies and PHP extensions
 RUN apt-get update && apt-get install -y \
@@ -9,6 +9,8 @@ RUN apt-get update && apt-get install -y \
     libicu-dev \
     libzip-dev \
     libonig-dev \
+    nginx \
+    supervisor \
     && docker-php-ext-install \
     intl \
     pdo \
@@ -20,42 +22,16 @@ RUN apt-get update && apt-get install -y \
 # Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-WORKDIR /var/www/html
-
-# Copy composer files (symfony.lock is optional)
-COPY composer.json ./
-COPY composer.lock ./
-
-# Install PHP dependencies (production only, optimized)
-RUN composer install --no-dev --optimize-autoloader --no-scripts --no-interaction --prefer-dist
-
-# Stage 2: Final production image
-FROM php:8.2-fpm
-
-# Install runtime dependencies
-RUN apt-get update && apt-get install -y \
-    libicu-dev \
-    libzip-dev \
-    nginx \
-    supervisor \
-    && docker-php-ext-install \
-    intl \
-    pdo \
-    pdo_mysql \
-    zip \
-    opcache \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
-
 # Copy PHP configuration
 COPY docker/php.ini $PHP_INI_DIR/conf.d/custom.ini
 
 WORKDIR /var/www/html
 
-# Copy vendor from builder stage
-COPY --from=builder /var/www/html/vendor ./vendor
-
 # Copy application code
 COPY . .
+
+# Install PHP dependencies (will be done in start.sh to avoid build issues)
+# RUN composer install --no-dev --optimize-autoloader --no-scripts --no-interaction --prefer-dist
 
 # Create necessary directories and set permissions
 RUN mkdir -p var/cache var/log \
